@@ -1,3 +1,6 @@
+import {ForFormData, ForTableData} from "./Interface.js"
+
+
 export default abstract class BaseComponent{
     constructor(){
         if(this.constructor==BaseComponent){
@@ -5,5 +8,5 @@ export default abstract class BaseComponent{
         }
     }
 
-    abstract render(root:HTMLElement|null):void;
+    abstract render(root:ForTableData|ForFormData|null):void;
 }
