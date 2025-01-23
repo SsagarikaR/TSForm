@@ -2,6 +2,7 @@ import Form from "./Form.js";
 import Table from "./Table.js";
 
 export default class App{
+
     container:HTMLDivElement
 
     constructor(rootId:string){
@@ -9,7 +10,17 @@ export default class App{
         this.container=document.createElement("div");
         this.container.setAttribute("class","container")
         root?.append(this.container)
-        new Form(this.container);
-        new Table(this.container);
+        
+       this.render();
+    }
+    render(){
+        const form=new Form(this.container);
+        const table=new Table(this.container);
+
+        document.querySelector(".submit")?.addEventListener("click",(e)=>{
+            e.preventDefault();
+            const FormsData=form.setter()
+            table.setter(FormsData);
+        })
     }
 }

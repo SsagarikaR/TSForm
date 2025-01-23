@@ -1,11 +1,9 @@
-export default class BaseComponent{
+export default abstract class BaseComponent{
     constructor(){
         if(this.constructor==BaseComponent){
             throw new Error ("Abstract classes can't be instantiated");
         }
     }
 
-    render(oot:HTMLElement|null){
-        throw new Error("method 'render()' must be implemeted")
-    }
+    abstract render(root:HTMLElement|null):void;
 }
