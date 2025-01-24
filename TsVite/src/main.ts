@@ -9,7 +9,8 @@ class index{
       this.container=document.createElement("div");
       this.container.setAttribute("class","container")
       root?.append(this.container)
-      new App(this.container);
+      // new App(this.container);
+      App.getInstance(this.container);
    }
 }
 new index("app");

@@ -2,57 +2,91 @@ import Form from "./Form.js";
 import Table from "./Table.js";
 import BaseCompoent from "./BaseComponent.js";
 import StateManager from "./StateManager.js";
-import {ForFormData, ForTableData, forState } from "./Interface.js"
+import { forState } from "./Interface.js"
 
 export default class App extends BaseCompoent{
 
-    state:forState
+    state:forState;
     private form:Form;
     private table:Table;
-    private stateManager:StateManager
+    private stateManager:StateManager;
+    private static instance:App;
 
-    constructor(root:HTMLElement | null){
+    private constructor(root:HTMLElement | null){
         super();
-        // const root=document.getElementById(rootId);
-        // this.container=document.createElement("div");
-        // this.container.setAttribute("class","container")
-        // root?.append(this.container)
-        this.form=new Form(root);
-        this.table=new Table(root);
-         this.stateManager=new StateManager();
+        this.form=Form.getInstance(root);
+        this.table=Table.getInstance(root);
+        this.stateManager=StateManager.getInstance();
 
         this.state={
             form:{
                 full_name:"",
                 email:"",
                 contact:"",
-                password:""
+                password:"",
+                college:""
             },
             table:{},
         }
+
         this.render();
         this.TriggerStateManager();
     }
 
+    static getInstance(root:HTMLElement | null):App{
+        if(!App.instance){
+            App.instance=new App(root);
+        }
+        return  App.instance;
+    }
+
     render(){
-        this.form.render(this.state.form);
+        this.form.render(this.state);
         this.table.render(this.state.table);
-        // this.form.onSubmit(this.state.OnSubmit);
-        // this.table.onEdit(this.state.OnEdit);
     }
 
     TriggerStateManager(){
+
         document.addEventListener("submitEvent",()=>{
-            console.log("submitEvent");
             this.stateManager.setStateOnSubmit(this.state);
         })
 
-        document.addEventListener("editEvent",()=>{
-            // this.stateManager.setStateOnSubmit(this.state);
+        document.addEventListener("editEvent",(e:Event)=>{
+            const id=(e as CustomEvent).detail.id;
+            this.stateManager.setStateOnEdit(this.state,id);
         })
-        document.addEventListener("submitDone",()=>{
-            console.log(this.state.table),"submitDone";
+
+        document.addEventListener("updateEvent",()=>{
+            this.stateManager.setStateOnUpdate(this.state);
+        })
+
+        document.addEventListener("deleteEvent",(e:Event)=>{
+            this.stateManager.setStateOnDelete(this.state,(e as CustomEvent).detail.id)
+        })
+
+
+        document.addEventListener("submitOrDelDone",()=>{
             this.table.render(this.state.table);
         })
+
+        document.addEventListener("editReady",()=>{
+            this.form.render(this.state);
+            const submit=<HTMLButtonElement>document.querySelector(".submit");
+            const update=<HTMLButtonElement>document.querySelector(".update");
+            submit.classList.add("hide");
+            update.classList.remove("hide")
+        })
+
+        document.addEventListener("updateDone",()=>{
+            this.table.render(this.state.table);
+            const submit=<HTMLButtonElement>document.querySelector(".submit");
+            const update=<HTMLButtonElement>document.querySelector(".update");
+            submit.classList.add("hide");
+            update.classList.remove("hide")
+        })
+        document.addEventListener("stateChanged",()=>{
+            this.render();
+        })
+
     }
 }

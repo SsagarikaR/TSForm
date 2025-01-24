@@ -27,12 +27,15 @@ body{
 .btn{
   /* width: 12rem; */
   margin: auto;
-  padding: 0.8rem 1rem;
+  padding: 0.8rem 1.5rem;
   border-radius: 0.5rem;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 600;
   cursor: pointer;
   border: none;
+}
+.required,.error{
+  color: rgb(124, 25, 25);
 }
 /* -------------------FORM--------------------------- */
 h2{
@@ -54,16 +57,17 @@ form{
 }
 .inputs_container{
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   row-gap: 0.8rem;
   margin-bottom: 1.3rem;
 }
 .input_box_div{
   width: 100%;
-  display: flex;
 }
 label{
-  width: 30%;
+  display: inline-block;
+  width: 30% ;
   font-size: 1.5rem;
   font-weight:600;
 }
@@ -79,6 +83,7 @@ input[type="checkbox"]{
 }
 .input_box{
   width: 59.26%;
+  display: inline-block;
   padding: 0.6rem 0.1rem;
   height: 1rem;
   outline: none;
@@ -92,7 +97,7 @@ input[type="checkbox"]{
   background: var(--hover-body-bg);
   box-shadow: 0px 0px 20px 1px;
 }
-.update{
+.hide{
   display: none;
 }
 /* -------------------FORM--------------------------- */

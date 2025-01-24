@@ -1,4 +1,4 @@
-import {ForFormData, ForTableData} from "./Interface.js"
+import {ForFormData, ForTableData,forState} from "./Interface.js"
 
 
 export default abstract class BaseComponent{
@@ -8,5 +8,5 @@ export default abstract class BaseComponent{
         }
     }
 
-    abstract render(root:ForTableData|ForFormData|null):void;
+    abstract render(root:ForTableData|ForFormData|forState|null):void;
 }
