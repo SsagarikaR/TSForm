@@ -84,14 +84,6 @@ export class Validations {
             "Password must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters",
         },
       },
-      agree:{
-        require:{
-          logic: (val) => {
-            return !(<HTMLInputElement>document.getElementById("agree")).checked;
-          },
-          message: "Please check this box to proceed",
-        }
-      }
     };
   }
 

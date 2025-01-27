@@ -28,6 +28,7 @@ export default class App extends BaseCompoent{
                 email:"",
                 contact:"",
                 password:"",
+                DOB:"",
                 college:""
             },
             table:{},

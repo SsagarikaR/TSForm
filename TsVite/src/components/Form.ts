@@ -23,6 +23,7 @@ export default class Form extends BaseCompoent{
             email:"",
             contact:"",
             password:"",
+            DOB:"",
             college:""
         }
 
@@ -64,9 +65,9 @@ export default class Form extends BaseCompoent{
                             <label for="password">Password: <span class="required">*</span></label>
                            <input type="password" id="password" class="input_box require" > 
                         </div>
-                        <div class="input_box_div require_div">
-                            <label for="Rpassword">Retype password: <span class="required">*</span></label>
-                            <input type="password" id="Rpassword" class="input_box " >
+                        <div class="input_box_div ">
+                            <label for="DOB">Date of birth:</label>
+                            <input type="date" id="DOB" class="input_box " >
                         </div>
                         <div class="input_box_div ">
                             <label for="name">College: </label>
@@ -80,13 +81,9 @@ export default class Form extends BaseCompoent{
                                 <option value="ITER">ITER</option>
                             </datalist>
                         </div >
-                        <div class="input_box_div require_div agree_div">
-                            <input type="checkbox" id="agree" class="require">
-                            <label for="agree" class="agree_label">I agree to the <a href="#">Terms&Conditions</a></label>
-                        </div>
                         
                     </div> 
-                    <button class="btn submit">Create account</button> 
+                    <button class="btn submit">Submit</button> 
                     <button class="btn update hide">Update</button>  `;
         
         this.triggerEvents(state);
@@ -105,6 +102,7 @@ export default class Form extends BaseCompoent{
            (<HTMLInputElement>document.getElementById("email")).value=state.table[this.id].email;
            (<HTMLInputElement>document.getElementById("contact")).value=state.table[this.id].contact;
            (<HTMLInputElement>document.getElementById("password")).value=state.table[this.id].password;
+           (<HTMLInputElement>document.getElementById("DOB")).value=state.table[this.id].DOB;
            (<HTMLInputElement>document.getElementById("college")).value=state.table[this.id].college;
 
         })
@@ -112,20 +110,18 @@ export default class Form extends BaseCompoent{
         document.querySelector(".submit")?.addEventListener('click', (e) => {
             e.preventDefault();
             this.setData();
-            console.log((<HTMLInputElement>document.querySelector("#agree")).value);
             if (this.isDataValid()) {
               document.dispatchEvent(new CustomEvent("submitEvent", { detail: { data: this.data } }));
-              this.notification.render("Submitted Successfully");
+              this.notification.render(`<i class="fa fa-check-circle" aria-hidden="true"></i>Submitted successfully`);
             }
           })
 
         document.querySelector(".update")?.addEventListener('click',(e)=>{
             e.preventDefault();
             this.setData();
-            console.log((<HTMLInputElement>document.querySelector("#agree")).value);
             if (this.isDataValid()) {
                 document.dispatchEvent(new CustomEvent("updateEvent",{detail:{data:this.data, id:this.id}}));
-                this.notification.render("Updated Successfully");
+                this.notification.render(`<i class="fa fa-check-circle" aria-hidden="true"></i> Updated successfully`);
             }
         })
 
@@ -157,13 +153,13 @@ export default class Form extends BaseCompoent{
                 isValid = false;
                 const parents = input.closest(".input_box_div");
                 if (parents?.children[2]) {
+                    input.id==="agree" ? document.querySelector(".error")?.classList.add("agree-error"):" ";
                     parents.children[2].textContent = errorMessage;
                 } 
                 else{
                     const errorMessageDiv = document.createElement("div");
                     errorMessageDiv.textContent = errorMessage;
                     errorMessageDiv.classList.add("error");
-                    input.id==="agree" ? errorMessageDiv.classList.add("agree-error"):" ";
                     parents?.append(errorMessageDiv);
                 }
             }
@@ -176,6 +172,7 @@ export default class Form extends BaseCompoent{
         this.data.email=(<HTMLInputElement>document.getElementById("email")).value;
         this.data.contact=(<HTMLInputElement>document.getElementById("contact")).value;
         this.data.password=(<HTMLInputElement>document.getElementById("password")).value;
+        this.data.DOB=(<HTMLInputElement>document.getElementById("DOB")).value;
         this.data.college=(<HTMLInputElement>document.getElementById("college")).value;
     }
 

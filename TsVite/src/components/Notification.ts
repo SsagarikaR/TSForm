@@ -22,7 +22,7 @@ export default class Notification extends BaseComponent{
         this.notificationConatiner.innerHTML=
                                         `
                                         <div id="toastBox">
-                                            <div class="toast"> <i class="fa fa-check-circle" aria-hidden="true"></i> ${message}</div>
+                                            <div class="toast">  ${message}</div>
                                         </div>
                                         `
         setTimeout(()=>{

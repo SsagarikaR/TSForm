@@ -16,14 +16,15 @@ export default class StateManager{
 
     setState(stateRecords:forStateRecords,state:forState,data:ForFormData|null=null,id:string|null=null){
         console.log(id);
-        if(data!==null){
+        const NewData=data;
+        if(NewData!==null){
             if(id===null){
-                state.form=data;
-                state.table[Object.keys(state.table).length]=data;
+                state.form={...NewData};
+                state.table[Object.keys(state.table).length]={...NewData};
             }
             else{
-                state.form=data;
-                state.table[id]=data;
+                state.form={...NewData};
+                state.table[id]={...NewData};
             }
         }
         else if (id !== null && id in state.table) {
