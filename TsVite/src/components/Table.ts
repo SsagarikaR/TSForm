@@ -1,5 +1,5 @@
 import BaseCompoent from "./BaseComponent.js";
-import {ForTableData} from "./Interface.js"
+import {forState, ForTableData} from "./Interface.js"
 
 export default class Table extends BaseCompoent{
     private static instance:Table;
@@ -22,7 +22,7 @@ export default class Table extends BaseCompoent{
         return Table.instance;
     }
 
-    render(tableData:ForTableData): void {
+    render(state:forState): void {
         this.tableElement.innerHTML=
                 `
                 <tr>
@@ -33,13 +33,13 @@ export default class Table extends BaseCompoent{
                 </tr>
                 `;
 
-        tableData&&Object.keys(tableData).forEach((key)=>{
+        state.table&&Object.keys( state.table).forEach((key)=>{
             // console.log(tableData);
             const newRow=(<HTMLTableElement>this.tableElement).insertRow();
             newRow.setAttribute("id",key);
-            newRow.insertCell().innerHTML=tableData[key as keyof typeof tableData].full_name;
-            newRow.insertCell().innerHTML=tableData[key].email;
-            newRow.insertCell().innerHTML=tableData[key].contact;
+            newRow.insertCell().innerHTML= state.table[key as keyof typeof  state.table].full_name;
+            newRow.insertCell().innerHTML= state.table[key].email;
+            newRow.insertCell().innerHTML= state.table[key].contact;
             const actionCell=newRow.insertCell()
             actionCell.classList.add("action");
             actionCell.innerHTML="<i class='fa fa-pencil-square-o edit' aria-hidden='true'></i> <i class='fa fa-trash delete' aria-hidden='true'></i>";
@@ -67,7 +67,7 @@ export default class Table extends BaseCompoent{
                 e.preventDefault();
                 const delete_row=Delete.closest("tr");
                 const id=delete_row!.id;
-                // console.log(id);
+                console.log(id);
                 document.dispatchEvent(new CustomEvent("deleteEvent",{detail:{id}}));
             })
         })

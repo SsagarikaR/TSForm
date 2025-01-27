@@ -1,14 +1,10 @@
-import { forState } from "./Interface.js"
-import { submitOrDelDone,editReady, updateDone} from "./EventManager.js";
+import { ForFormData, forState, forStateRecords } from "./Interface.js"
 
 export default class StateManager{
     private static instance:StateManager
-    private edit_id:string;
-    // private delete_id:string;
 
     private constructor(){
-        this.edit_id="";
-        // this.delete_id="";
+
     }
 
     static getInstance():StateManager{
@@ -18,49 +14,40 @@ export default class StateManager{
         return StateManager.instance;
     }
 
-    setStateOnSubmit(state:forState){
-        this.setStateOfForm(state);
-        state.table[Object.keys(state.table).length]=state.form
-        document.querySelectorAll("input").forEach((input)=>{
-            input.value="";
-        })
-        document.dispatchEvent(submitOrDelDone);
+    setState(stateRecords:forStateRecords,state:forState,data:ForFormData|null=null,id:string|null=null){
+        console.log(id);
+        if(data!==null){
+            if(id===null){
+                state.form=data;
+                state.table[Object.keys(state.table).length]=data;
+            }
+            else{
+                state.form=data;
+                state.table[id]=data;
+            }
+        }
+        else if (id !== null && id in state.table) {
+            delete state.table[id];
+            console.log(state.table)
+        }
+        // console.log(state);
+        // console.log(Date());
+        const newState = JSON.parse(JSON.stringify(state));
+        const date = new Date();
+        const formattedDateTime = date.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true });
+        stateRecords[formattedDateTime]=newState;
+        console.log(stateRecords);
+        document.dispatchEvent(new CustomEvent("stateChanged"))
     }
 
-    setStateOnChange(state:forState){
-       this.setStateOfForm(state);
-    }
-
-    setStateOnEdit(state:forState,id:string){
-        this.edit_id=id;
-        Object.keys(state.form).forEach((key)=>{
-           state.form[key as keyof typeof state.form]=state.table[id][key as keyof typeof state.form];
-        })
-        // console.log(state,"state on edit click");
-        document.dispatchEvent(editReady);
-    }
-
-    setStateOnUpdate(state:forState){
-       this.setStateOfForm(state)
-        state.table[this.edit_id]=state.form
-        document.querySelectorAll("input").forEach((input)=>{
-            input.value="";
-        })
-        document.dispatchEvent(updateDone);
-    }
-
-    setStateOnDelete(state:forState,id:string){
-        // this.delete_id=id;
-        delete state.table[id];
-        document.dispatchEvent(submitOrDelDone);
-    }
-
-    setStateOfForm(state:forState){
-        state.form.full_name=(<HTMLInputElement>document.querySelector("#full_name")).value;
-        state.form.email=(<HTMLInputElement>document.getElementById("email")).value;
-        state.form.contact=(<HTMLInputElement>document.getElementById("contact")).value;
-        state.form.password=(<HTMLInputElement>document.getElementById("password")).value;
-        state.form.college=(<HTMLInputElement>document.getElementById("college")).value;
+    getState(stateRecords:forStateRecords,state:forState,key:string){
+        console.log(stateRecords);
+        console.log(stateRecords[key]);
+         const newState=stateRecords[key];
+         state.form={...newState.form};
+         state.table={...newState.table};
+        console.log(state);
+        document.dispatchEvent(new CustomEvent("stateChanged"))
     }
 
 }

@@ -22,4 +22,7 @@ interface forValidation{
     }
 }
 
-export type { ForFormData, ForTableData, forState ,forValidation};
+interface forStateRecords{
+    [key:string]:forState
+}
+export type { ForFormData, ForTableData, forState ,forValidation,forStateRecords};

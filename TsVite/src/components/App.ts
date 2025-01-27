@@ -2,20 +2,24 @@ import Form from "./Form.js";
 import Table from "./Table.js";
 import BaseCompoent from "./BaseComponent.js";
 import StateManager from "./StateManager.js";
-import { forState } from "./Interface.js"
+import { Restore } from "./Restore.js";
+import { forState, forStateRecords } from "./Interface.js"
 
 export default class App extends BaseCompoent{
 
-    state:forState;
+    private static instance:App;
     private form:Form;
     private table:Table;
+    private restore:Restore;
     private stateManager:StateManager;
-    private static instance:App;
+    state:forState;
+    stateRecords:forStateRecords
 
     private constructor(root:HTMLElement | null){
         super();
         this.form=Form.getInstance(root);
         this.table=Table.getInstance(root);
+        this.restore=Restore.getInstance(root);
         this.stateManager=StateManager.getInstance();
 
         this.state={
@@ -28,6 +32,7 @@ export default class App extends BaseCompoent{
             },
             table:{},
         }
+        this.stateRecords={};
 
         this.render();
         this.TriggerStateManager();
@@ -42,48 +47,33 @@ export default class App extends BaseCompoent{
 
     render(){
         this.form.render(this.state);
-        this.table.render(this.state.table);
+        this.table.render(this.state);
+        this.restore.render(this.stateRecords);
     }
 
     TriggerStateManager(){
 
-        document.addEventListener("submitEvent",()=>{
-            this.stateManager.setStateOnSubmit(this.state);
+        document.addEventListener("submitEvent",(e:Event)=>{
+            this.stateManager.setState(this.stateRecords,this.state,(e as CustomEvent).detail.data);
         })
 
         document.addEventListener("editEvent",(e:Event)=>{
-            const id=(e as CustomEvent).detail.id;
-            this.stateManager.setStateOnEdit(this.state,id);
+            document.dispatchEvent(new CustomEvent("PassEditData",{detail:{id:(e as CustomEvent).detail.id}}))
         })
 
-        document.addEventListener("updateEvent",()=>{
-            this.stateManager.setStateOnUpdate(this.state);
+        document.addEventListener("updateEvent",(e:Event)=>{
+            this.stateManager.setState(this.stateRecords,this.state,(e as CustomEvent).detail.data,(e as CustomEvent).detail.id);
         })
 
         document.addEventListener("deleteEvent",(e:Event)=>{
-            this.stateManager.setStateOnDelete(this.state,(e as CustomEvent).detail.id)
+            this.stateManager.setState(this.stateRecords,this.state,null,(e as CustomEvent).detail.id)
         })
 
-
-        document.addEventListener("submitOrDelDone",()=>{
-            this.table.render(this.state.table);
+        document.addEventListener("setRecord",(e:Event)=>{
+            console.log(e,"clciked")
+            this.stateManager.getState(this.stateRecords,this.state,(e as CustomEvent).detail.key);
         })
 
-        document.addEventListener("editReady",()=>{
-            this.form.render(this.state);
-            const submit=<HTMLButtonElement>document.querySelector(".submit");
-            const update=<HTMLButtonElement>document.querySelector(".update");
-            submit.classList.add("hide");
-            update.classList.remove("hide")
-        })
-
-        document.addEventListener("updateDone",()=>{
-            this.table.render(this.state.table);
-            const submit=<HTMLButtonElement>document.querySelector(".submit");
-            const update=<HTMLButtonElement>document.querySelector(".update");
-            submit.classList.add("hide");
-            update.classList.remove("hide")
-        })
         document.addEventListener("stateChanged",()=>{
             this.render();
         })
